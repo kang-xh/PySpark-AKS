@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: spark
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  namespace: spark
+  name: notebook
+spec:
+  replicas: 1
+  minReadySeconds: 5 
+  template:
+    metadata:
+      labels:
+        app: notebook
+    spec:
+      containers:
+      - name: notebook
+        image: kangxhacrsea.azurecr.io/pyspark-notebook
+        imagePullPolicy: "Always"
+        env:
+          - name: WORKSPACE
+            value: "/mnt/azure"
+        ports:
+        - containerPort: 8888
+        resources:
+          requests:
+            cpu: 200m
+          limits:
+            cpu: 400m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: spark
+  name: notebook
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 10.10.0.230
+  ports:
+  - name: notebook
+    port: 80
+    targetPort: 8888
+  - name: monitor0
+    port: 4040
+    targetPort: 4040
+  - name: monitor1
+    port: 4041
+    targetPort: 4041
+  - name: monitor2
+    port: 4042
+    targetPort: 4042  
+  - name: monitor3
+    port: 4043
+    targetPort: 4043
+  selector:
+    app: notebook
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-notebook
+  namespace: spark
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: spark.kangxh.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: notebook
+          servicePort: 80
