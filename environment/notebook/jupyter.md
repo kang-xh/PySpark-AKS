@@ -10,8 +10,6 @@
 
 ##### test jupyter/pyspark-notebook in WSL
 
-    pickup jupyter/pyspark-notebook as the docker image.
-
     docker run -t --rm -p 8888:8888 -p 4040:4040 -p 4041:4041 jupyter/pyspark-notebook
 
 ##### start jupyter in ASK
