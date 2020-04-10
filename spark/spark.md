@@ -31,9 +31,13 @@
     https://hadoop.apache.org/docs/stable/hadoop-azure/abfs.html
 
     hdfs dfs -ls abfs://sample@kangxhadlsgen2sea.dfs.core.windows.net/
+    spark-submit /sample/python/spark-read-adls-csv.py
 
+    *Spark job could report error about Class Not found, etc. copy Jars from hadoop/share/hadoop/tools/lib to spark/jars.
 
+##### samples: 
 
+    use spark-pi 5 to calculate PI with 5 Executor, no dependence for storage.
 
 ##### connect spark to aks. 
 
@@ -41,8 +45,8 @@
 
     # build spark docker image: 
     az acr login --resource-group MSDNRGKangxhAKS --name kangxhacrsea
-    $SPARK_HOME/bin/docker-image-tool.sh -r kangxhacrsea.azurecr.io -t kangxhspark build
-    $SPARK_HOME/bin/docker-image-tool.sh -r kangxhacrsea.azurecr.io -t kangxhspark push
+    $SPARK_HOME/bin/docker-image-tool.sh -r kangxhacrsea.azurecr.io -t aks build
+    $SPARK_HOME/bin/docker-image-tool.sh -r kangxhacrsea.azurecr.io -t aks push
 
 
 
