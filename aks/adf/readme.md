@@ -1,0 +1,1 @@
+ADF pipeline to get data
