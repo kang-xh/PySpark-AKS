@@ -31,7 +31,9 @@
     https://hadoop.apache.org/docs/stable/hadoop-azure/abfs.html
 
     hdfs dfs -ls abfs://sample@kangxhadlsgen2sea.dfs.core.windows.net/
+
     spark-submit local:///home/allenk/github/PySpark-AKS/spark/sample/python/spark-pi.py 5
+    spark-submit local:///home/allenk/github/PySpark-AKS/spark/sample/python/spark-read-adls-csv.py
 
     *Spark job could report error about Class Not found, etc. copy Jars from hadoop/share/hadoop/tools/lib to spark/jars.
 
@@ -39,11 +41,28 @@
 
     use spark-pi 5 to calculate PI with 5 Executor, no dependence for storage.
 
-##### connect spark to aks. 
+##### connect spark to aks and submit some test job. 
 
     https://spark.apache.org/docs/2.3.0/running-on-kubernetes.html
 
+    Locate the spark job in the a Azure File Share PVC which will be moutned in the Driver PoD. Test to ensure spark job can be submitted without ADLS access. 
 
+    NAME                   CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                           STORAGECLASS   REASON   AGE
+    adls-file-pyspark-pv   5Gi        RWX            Retain           Bound    default/adls-file-pyspark-pvc   azurefile               5d17h
+
+    NAME                    STATUS   VOLUME                 CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+    adls-file-pyspark-pvc   Bound    adls-file-pyspark-pv   5Gi        RWX            azurefile      5d17h
+
+    spark-submit \
+        --master k8s://kangxhakss-msdnrgkangxhseaa-e7c1ea-e246302a.hcp.southeastasia.azmk8s.io:443 \
+        --deploy-mode cluster \
+        --name spark-pi \
+        --conf spark.executor.instances=3 \
+        --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \
+        --conf spark.kubernetes.container.image=kangxhacrsea.azurecr.io/spark-py:v3.3.0 \
+        --conf spark.kubernetes.driver.volumes.persistentVolumeClaim.adlsfile.options.claimName=adls-file-pyspark-pvc \
+        --conf spark.kubernetes.driver.volumes.persistentVolumeClaim.adlsfile.mount.path=/mnt/pysparkapp \
+        local:///mnt/pysparkapp/spark-pi.py
 
 
 

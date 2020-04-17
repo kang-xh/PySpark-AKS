@@ -13,8 +13,8 @@ spark = SparkSession.builder \
 
 # Convert list to data frame
 df = spark.read.format('csv') \
-                .option('header',True) \
-                .option('sep', ',') \
-                .load('abfs://sample@kangxhadlsgen2sea.dfs.core.windows.net/csv/sales.csv')
+    .option('header',True) \
+    .option('sep', ',') \
+    .load('abfs://sample@kangxhadlsgen2sea.dfs.core.windows.net/csv/sales.csv')
 
 df.show()

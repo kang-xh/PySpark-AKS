@@ -17,7 +17,7 @@ kubectl create clusterrolebinding spark-role --clusterrole=edit --serviceaccount
 
 ##### create Azure File PV for AKS
 
-    export STORAGE_KEY=HQQYSGMjr1+JuMz7sUEY1hBfetU6kIm8i/TI8MvygCbbpuYP9PHkupQM4ypmslbancEcxrqbAPNIcgk3zZrcyQ==
+    export STORAGE_KEY=abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd
     export STORAGE_ACCOUNT_NAME=kangxhadlsgen2sea
 
     kubectl create secret generic azure-adls-secret --from-literal=azurestorageaccountname=$STORAGE_ACCOUNT_NAME --from-literal=azurestorageaccountkey=$STORAGE_KEY
@@ -56,3 +56,13 @@ sample without external storage dependence.
         --conf spark.kubernetes.driver.volumes.persistentVolumeClaim.adlsfile.mount.path=/mnt/pysparkapp \
         local:///mnt/pysparkapp/spark-pi.py
 
+    spark-submit \
+        --master k8s://kangxhakss-msdnrgkangxhseaa-e7c1ea-e246302a.hcp.southeastasia.azmk8s.io:443 \
+        --deploy-mode cluster \
+        --name spark-adls-csv \
+        --conf spark.executor.instances=3 \
+        --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \
+        --conf spark.kubernetes.container.image=kangxhacrsea.azurecr.io/spark-py:v3.3.0 \
+        --conf spark.kubernetes.driver.volumes.persistentVolumeClaim.adlsfile.options.claimName=adls-file-pyspark-pvc \
+        --conf spark.kubernetes.driver.volumes.persistentVolumeClaim.adlsfile.mount.path=/mnt/pysparkapp \
+        local:///mnt/pysparkapp/spark-read-adls-csv.py
