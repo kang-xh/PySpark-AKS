@@ -4,7 +4,10 @@
 
 #### AKS setup
 
-    refer to PoC-AKS for Basic AKS Setup.
+    refer to Github Repo PoC-AKS for configuration, including: 
+    - Basic AKS setup
+    - vLoad PoD deployment 
+    - Spark PV and PVC configuration is including in this repo under aks.
 
 #### process guide: 
 
