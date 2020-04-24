@@ -129,14 +129,14 @@ def Create_RecordMsg_EventHub(threadName, connect_str, delay):
     print ("create Message Record from tread: " + threadName)
 
 # start to create thread to generate workload
-print(str(BLOB_GENERATE_LOAD))
+
 if BLOB_GENERATE_LOAD==True:
     print(str(datetime.now())+ " - Creating threads to genereate BLOB workload")
     for threadID in range(BLOB_THREAD_COUNT):
         Thread(target= Create_RecordFile_AzureBlob, kwargs={"threadName": "BLOB-Thread-"+str(threadID), "connect_str": BLOB_CONNECTION_STRING, "container_name": BLOB_CONTAINER_NAME, "delay":BLOB_SLEEP_TIME_IN_SEC},).start()
         print(str(datetime.now())+ " - BLOB-Thread-" +str(threadID) + " created")
 
-print(str(SQL_GENERATE_LOAD))
+
 if SQL_GENERATE_LOAD==True:
     print(str(datetime.now())+ " - Creating threads to genereate SQL workload")
     for threadID in range(SQL_THREAD_COUNT):
