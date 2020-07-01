@@ -1,14 +1,3 @@
-#### Running Spark on Kubernetes
-
-    1. setup mini spark env on WSL. 
-    2. test WSL with sc master=local[*]
-    3. follow apache spark doc to prepare image for AKS. 
-    4. put images to ACR
-
-    https://spark.apache.org/docs/2.3.0/running-on-kubernetes.html
-    
-    use WSL as client to submit spark job. 
-
 ##### prepare spark env in WSL
 
     # install openjdk
@@ -16,13 +5,10 @@
 
     # install hadoop 3.2
     https://kontext.tech/column/hadoop/307/install-hadoop-320-on-windows-10-using-windows-subsystem-for-linux-wsl
-    wget https://mirror.bit.edu.cn/apache/hadoop/common/hadoop-3.2.1/hadoop-3.2.1.tar.gz
+    wget https://downloads.apache.org/spark/spark-3.0.0/spark-3.0.0-bin-hadoop3.2.tgz
     
     # install spark. 
     https://kontext.tech/column/spark/311/apache-spark-243-installation-on-windows-10-using-windows-subsystem-for-linux
-
-    wget https://mirrors.tuna.tsinghua.edu.cn/apache/spark/spark-2.4.5/spark-2.4.5-bin-hadoop2.7.tgz
-    tar -xvzf spark-2.4.5-bin-hadoop3.0.tgz -C ~/hadoop
 
     # after this step, WSL should be able to run spark-shell with sc master = local[*]
 
@@ -32,14 +18,20 @@
 
     hdfs dfs -ls abfs://sample@kangxhadlsgen2sea.dfs.core.windows.net/
 
-    spark-submit local:///home/allenk/github/PySpark-AKS/spark/sample/python/spark-pi.py 5
-    spark-submit local:///home/allenk/github/PySpark-AKS/spark/sample/python/spark-read-adls-csv.py
+##### Run Test jobs on local spark
 
-    *Spark job could report error about Class Not found, etc. copy Jars from hadoop/share/hadoop/tools/lib to spark/jars.
+    # test job without storage access
+    spark-submit /home/allenk/github/PySpark-AKS/jobs//spark-pi.py 5
 
-##### samples: 
+    3 test job with ADLS data read.
+    spark-submit /home/allenk/github/PySpark-AKS/jobs//spark-read-adls-csv.py
 
-    use spark-pi 5 to calculate PI with 5 Executor, no dependence for storage.
+##### prepare spark to access azure resource
+
+    cp ~/hadoop/share/hadoop/tools/lib/hadoop-az* $SPARK_HOME/jars/
+    cp ~/hadoop/share/hadoop/tools/lib/az* $SPARK_HOME/jars/
+
+    cp ~/hadoop/share/hadoop/tools/lib/wildfly-openssl-1.0.7.Final.jar $SPARK_HOME/jars/
 
 ##### connect spark to aks and submit some test job. 
 

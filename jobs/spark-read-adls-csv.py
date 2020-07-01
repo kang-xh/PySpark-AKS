@@ -15,6 +15,6 @@ spark = SparkSession.builder \
 df = spark.read.format('csv') \
     .option('header',True) \
     .option('sep', ',') \
-    .load('abfs://sample@kangxhadlsgen2sea.dfs.core.windows.net/csv/sales.csv')
+    .load('abfs://spark@kangxhadlsgen2sea.dfs.core.windows.net/sampledata/transaction.csv')
 
 df.show()
